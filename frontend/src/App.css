@@ -1,0 +1,120 @@
+.app-shell {
+  width: min(100% - 32px, 760px);
+  margin: 0 auto;
+  padding: 56px 0 44px;
+}
+
+.app-header { position: relative; text-align: center; }
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+h1 {
+  margin: 0;
+  color: var(--text-h);
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: clamp(42px, 8vw, 68px);
+  font-weight: 500;
+  letter-spacing: -0.06em;
+  line-height: 0.95;
+}
+
+.subtitle { margin: 16px auto 0; color: var(--text); font-size: 15px; }
+
+#top { display: flex; justify-content: center; margin: 28px 0 18px; }
+
+.play-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 12px 19px;
+  border: 0;
+  border-radius: 999px;
+  color: #fff;
+  background: var(--accent);
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--accent) 28%, transparent);
+  font: 700 14px/1 var(--sans);
+  cursor: pointer;
+  transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+
+  &:hover { background: var(--accent-strong); box-shadow: 0 14px 28px color-mix(in srgb, var(--accent) 35%, transparent); transform: translateY(-2px); }
+  &:active { transform: translateY(0); }
+  &:focus-visible { outline: 3px solid var(--accent-ring); outline-offset: 3px; }
+
+  &.is-playing {
+    color: var(--text-h);
+    background: var(--surface);
+    box-shadow: inset 0 0 0 1px var(--border), var(--card-shadow);
+  }
+}
+
+.play-icon { width: 12px; font-size: 11px; text-align: center; }
+
+#center {
+  position: relative;
+  display: grid;
+  min-height: 285px;
+  place-content: center;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background: var(--note-surface);
+  box-shadow: var(--card-shadow);
+
+  &::before, &::after { position: absolute; width: 120%; height: 1px; background: var(--staff-line); content: ''; }
+  &::before { top: 38%; box-shadow: 0 12px var(--staff-line), 0 24px var(--staff-line), 0 36px var(--staff-line), 0 48px var(--staff-line); }
+  &::after { bottom: 38%; opacity: 0.32; }
+}
+
+.note-prompt, .note-display, .note-placeholder { position: relative; z-index: 1; }
+.note-prompt { align-self: start; margin: 36px 0 0; color: var(--text); font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+.note-display { min-width: 3ch; color: var(--text-h); font: 500 clamp(82px, 18vw, 150px) / 0.85 Georgia, 'Times New Roman', serif; letter-spacing: -0.1em; text-align: center; text-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 13%, transparent); }
+.note-placeholder { color: color-mix(in srgb, var(--accent) 52%, transparent); font: 500 92px/1 Georgia, 'Times New Roman', serif; }
+
+#toggleables { position: absolute; top: 0; right: 0; display: flex; gap: 7px; }
+
+.toggleable {
+  width: 47px;
+  height: 47px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--toggle-off);
+  background: var(--toggle-surface);
+  font: 500 26px/1 Georgia, 'Times New Roman', serif;
+  cursor: pointer;
+  transition: transform 150ms ease, background-color 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease;
+
+  &:hover { border-color: var(--accent); color: var(--text-h); transform: translateY(-2px); }
+  &:focus-visible { outline: 3px solid var(--accent-ring); outline-offset: 2px; }
+  &.is-active { border-color: var(--accent); color: #fff; background: var(--accent); box-shadow: 0 6px 12px color-mix(in srgb, var(--accent) 24%, transparent); }
+}
+
+.speed-control {
+  width: min(460px, 100%);
+  margin: 22px auto 0;
+  padding: 22px 26px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: var(--card-shadow);
+
+  label { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 14px; color: var(--text-h); font-size: 13px; font-weight: 700; }
+  output { color: var(--accent); font-family: var(--mono); font-size: 12px; font-weight: 600; }
+  input { width: 100%; margin: 0; accent-color: var(--accent); cursor: pointer; }
+}
+
+.speed-labels { display: flex; justify-content: space-between; margin-top: 4px; color: var(--text); font-size: 11px; }
+
+@media (max-width: 600px) {
+  .app-shell { width: min(100% - 24px, 760px); padding: 36px 0 28px; }
+  #center { min-height: 245px; border-radius: 19px; }
+  #toggleables { position: static; justify-content: center; margin-top: 22px; }
+  .speed-control { padding: 21px; }
+}
