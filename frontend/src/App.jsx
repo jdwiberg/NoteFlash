@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { getNote } from './game/game'
 import './App.css'
 
@@ -9,7 +9,10 @@ function App() {
   const [naturals, setNaturals] = useState(true)
   const [inProgress, setInProgress] = useState(false)
   const [note, setNote] = useState('')
+  const [stringIndex, setStringIndex] = useState(0)
+  const [stringsEnabled, setStringsEnabled] = useState(Array(6).fill(true))
   const [speed, setSpeed] = useState(1)
+  const hasShownInitialNote = useRef(false)
 
   useEffect(() => {
     if (!flats && !sharps && !naturals) {
@@ -20,18 +23,38 @@ function App() {
   useEffect(() => {
     if (!inProgress) {
       setNote('')
+      hasShownInitialNote.current = false
       return undefined
     }
 
     const displayNextNote = () => {
+      const activeStrings = stringsEnabled
+        .map((enabled, index) => (enabled ? index : null))
+        .filter((index) => index !== null)
+
       setNote(getNote(sharps, flats, naturals))
+      setStringIndex(activeStrings[Math.floor(Math.random() * activeStrings.length)])
     }
 
-    displayNextNote()
+    if (!hasShownInitialNote.current) {
+      displayNextNote()
+      hasShownInitialNote.current = true
+    }
+
     const noteLoop = setInterval(displayNextNote, speed * 1000)
 
     return () => clearInterval(noteLoop)
-  }, [inProgress, sharps, flats, naturals, speed])
+  }, [inProgress, sharps, flats, naturals, stringsEnabled, speed])
+
+  const toggleString = (index) => {
+    if (stringsEnabled[index] && stringsEnabled.filter(Boolean).length === 1) {
+      return
+    }
+
+    setStringsEnabled((enabled) => enabled.map((isEnabled, stringIndex) => (
+      stringIndex === index ? !isEnabled : isEnabled
+    )))
+  }
 
   return (
     <main className="app-shell">
@@ -83,9 +106,30 @@ function App() {
       </section>
 
       <section id="center">
-        <p className="note-prompt">{inProgress ? 'Find this note' : ''}</p>
-        {inProgress && <span className="note-display">{note}</span>}
-        {!inProgress && <span className="note-placeholder" aria-hidden="true">♪</span>}
+        <p className="note-prompt">{inProgress ? 'Find this note on this string' : ''}</p>
+        <div className="string-display">
+          <div className="guitar-strings" aria-label="Choose strings to include">
+            {stringsEnabled.map((enabled, index) => (
+              <button
+                key={index}
+                type="button"
+                className={`guitar-string toggleable ${enabled ? 'is-active' : ''}`}
+                aria-label={`Include string ${index + 1}`}
+                aria-pressed={enabled}
+                onClick={() => toggleString(index)}
+              />
+            ))}
+          </div>
+          {inProgress && (
+            <span
+              className="note-display"
+              style={{ '--string-index': stringIndex }}
+            >
+              {note}
+            </span>
+          )}
+          {!inProgress && <span className="note-placeholder" aria-hidden="true">♪</span>}
+        </div>
       </section>
 
       <section className="speed-control" aria-labelledby="speed-label">
